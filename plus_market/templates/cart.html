@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+
+{% block title %}Savatingiz — Plus Market{% endblock %}
+
+{% block content %}
+<style>
+    .cart-container {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 0 20px;
+        font-family: 'Segoe UI', Roboto, sans-serif;
+    }
+    .cart-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 24px;
+        color: #0f172a;
+    }
+    .cart-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+    }
+    @media (max-width: 768px) {
+        .cart-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    .cart-items-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9;
+    }
+    .cart-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .cart-item:last-child {
+        border-bottom: none;
+    }
+    .item-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .item-img {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 12px;
+        background-color: #f8fafc;
+    }
+    .item-details h4 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 0 4px 0;
+        color: #0f172a;
+    }
+    .item-details span {
+        font-size: 13px;
+        color: #64748b;
+    }
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #f1f5f9;
+        padding: 6px 12px;
+        border-radius: 10px;
+    }
+    .quantity-btn {
+        text-decoration: none;
+        color: #0f172a;
+        font-weight: bold;
+        font-size: 16px;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        transition: background 0.2s;
+    }
+    .quantity-btn:hover {
+        background: #e2e8f0;
+    }
+    .item-price {
+        font-weight: 700;
+        font-size: 16px;
+        color: #0f172a;
+        min-width: 100px;
+        text-align: right;
+    }
+    .summary-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9;
+        height: fit-content;
+    }
+    .summary-card h3 {
+        font-size: 18px;
+        margin-top: 0;
+        margin-bottom: 18px;
+        color: #0f172a;
+    }
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        font-size: 14px;
+        color: #475569;
+    }
+    .summary-divider {
+        border: none;
+        border-top: 1px solid #e2e8f0;
+        margin: 16px 0;
+    }
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 18px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 20px;
+    }
+    .checkout-btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        background: #ea580c;
+        color: #ffffff;
+        padding: 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 16px;
+        transition: background 0.2s;
+        border: none;
+        box-sizing: border-border-box;
+    }
+    .checkout-btn:hover {
+        background: #c2410c;
+    }
+    .empty-cart {
+        text-align: center;
+        padding: 40px 0;
+        color: #64748b;
+    }
+    .btn-back {
+        display: inline-block;
+        margin-top: 15px;
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 600;
+    }
+</style>
+
+<div class="cart-container">
+    <h1 class="cart-title">Savatingiz</h1>
+
+    <div class="cart-grid">
+        <!-- Chap taraf: Mahsulotlar ro'yxati -->
+        <div class="cart-items-card">
+            {% for item in cart_items %}
+                <div class="cart-item">
+                    <div class="item-info">
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}" class="item-img">
+                        {% else %}
+                            <div class="item-img" style="display:flex; align-items:center; justify-content:center; color:#cbd5e1; font-size:12px;">Rasm yo'q</div>
+                        {% endif %}
+                        <div class="item-details">
+                            <h4>{{ item.product.title }}</h4>
+                            <span>{{ item.product.unit|default:"dona" }}</span>
+                        </div>
+                    </div>
+
+                    <div class="quantity-controls">
+                        <a href="{% url 'cart_decrease' item.product.id %}" class="quantity-btn">-</a>
+                        <span>{{ item.quantity }}</span>
+                        <a href="{% url 'cart_increase' item.product.id %}" class="quantity-btn">+</a>
+                    </div>
+
+                    <div class="item-price">
+                        {{ item.total }} so'm
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-cart">
+                    <p>Savatchangizda hozircha hech narsa yo'q.</p>
+                    <a href="{% url 'home' %}" class="btn-back">← Xarid qilishni boshlash</a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- O'ng taraf: Buyurtma xulosasi -->
+        <div class="summary-card">
+            <h3>Buyurtma xulosasi</h3>
+            
+            <div class="summary-row">
+                <span>Mahsulotlar narxi</span>
+                <span><strong>{{ total_price }}</strong> so'm</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Yetkazib berish</span>
+                <span>Keyingi bosqichda</span>
+            </div>
+
+            <hr class="summary-divider">
+
+            <div class="total-row">
+                <span>Jami</span>
+                <span>{{ total_price }} so'm</span>
+            </div>
+
+            {% if first_product_id %}
+                <a href="{% url 'checkout' first_product_id %}" class="checkout-btn">
+                    Buyurtmani rasmiylashtirish
+                </a>
+            {% else %}
+                <button disabled class="checkout-btn" style="background-color: #cbd5e1; cursor: not-allowed;">
+                    Buyurtmani rasmiylashtirish
+                </button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Plus Market boshqaruv paneli{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'admin/css/custom_admin.css' %}">
+  <link rel="icon" href="{% static 'img/logo.webp' %}">
+{% endblock %}
+
+{% block branding %}
+  <h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+      <img src="{% static 'img/logo.webp' %}" alt="Plus Market" style="height:28px; vertical-align:middle; margin-right:8px; border-radius:6px;">
+      Plus Market — boshqaruv paneli
+    </a>
+  </h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
