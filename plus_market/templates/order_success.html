@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Buyurtma qabul qilindi — Plus Market{% endblock %}
+
+{% block content %}
+<style>
+    .success-container {
+        max-width: 600px;
+        margin: 60px auto;
+        padding: 40px 20px;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        font-family: 'Segoe UI', Roboto, sans-serif;
+    }
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        background: #dcfce7;
+        color: #16a34a;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        margin: 0 auto 20px auto;
+    }
+    .success-title {
+        font-size: 26px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 10px;
+    }
+    .success-text {
+        color: #64748b;
+        font-size: 15px;
+        margin-bottom: 30px;
+        line-height: 1.5;
+    }
+    .order-details {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+        text-align: left;
+    }
+    .order-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #334155;
+    }
+    .order-row:last-child {
+        margin-bottom: 0;
+    }
+    .btn-home {
+        display: inline-block;
+        background: #ea580c;
+        color: #ffffff;
+        padding: 12px 28px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.2s;
+    }
+    .btn-home:hover {
+        background: #c2410c;
+    }
+</style>
+
+<div class="success-container">
+    <div class="success-icon">✓</div>
+    <h1 class="success-title">Buyurtmangiz qabul qilindi!</h1>
+    <p class="success-text">
+        Xaridingiz uchun rahmat. Tez orada operatorlarimiz siz bilan bog'lanib, buyurtmani tasdiqlashadi.
+    </p>
+
+    {% if order %}
+    <div class="order-details">
+        <div class="order-row">
+            <span>Buyurtma raqami:</span>
+            <strong>#{{ order.id }}</strong>
+        </div>
+        <div class="order-row">
+            <span>Qabul qiluvchi:</span>
+            <strong>{{ order.full_name }}</strong>
+        </div>
+        <div class="order-row">
+            <span>Telefon:</span>
+            <strong>{{ order.phone_number }}</strong>
+        </div>
+        <div class="order-row">
+            <span>Jami summa:</span>
+            <strong>{{ order.total_amount }} so'm</strong>
+        </div>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'home' %}" class="btn-home">Bosh sahifaga qaytish</a>
+</div>
+{% endblock %}
