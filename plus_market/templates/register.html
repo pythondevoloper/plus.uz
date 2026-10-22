@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Ro'yxatdan o'tish — Plus Market{% endblock %}
+{% block content %}
+<style>
+  .auth{max-width:420px;margin:50px auto;padding:0 20px}
+  .auth-card{background:#fff;border-radius:18px;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,.06);border:1px solid #f1f5f9}
+  .auth h1{font-size:24px;font-weight:800;margin-bottom:20px}
+  .fg{margin-bottom:16px}.fg label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px}
+  .fg input{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14.5px}
+  .errorlist{color:#dc2626;font-size:12.5px;list-style:none;padding:0;margin:4px 0 0}
+  .auth-btn{width:100%;background:var(--green,#8bc53f);border:none;padding:12px;border-radius:999px;font-weight:700;font-size:15px;cursor:pointer}
+  .auth-sw{text-align:center;margin-top:18px;font-size:13.5px;color:#64748b}.auth-sw a{color:var(--purple,#4c3f91);font-weight:600}
+</style>
+<div class="auth"><div class="auth-card">
+  <h1>Ro'yxatdan o'tish</h1>
+  {{ form.non_field_errors }}
+  <form method="post">
+    {% csrf_token %}
+    <div class="fg"><label>F.I.O.</label>{{ form.full_name }}{{ form.full_name.errors }}</div>
+    <div class="fg"><label>Email</label>{{ form.email }}{{ form.email.errors }}</div>
+    <div class="fg"><label>Telefon raqam</label>{{ form.phone_number }}{{ form.phone_number.errors }}</div>
+    <div class="fg"><label>Parol</label>{{ form.password1 }}{{ form.password1.errors }}</div>
+    <div class="fg"><label>Parolni takrorlang</label>{{ form.password2 }}{{ form.password2.errors }}</div>
+    <button type="submit" class="auth-btn">Ro'yxatdan o'tish</button>
+  </form>
+  <p class="auth-sw">Hisobingiz bormi? <a href="{% url 'login' %}">Kirish</a></p>
+</div></div>
+{% endblock %}

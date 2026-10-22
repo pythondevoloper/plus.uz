@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Mening kabinetim — Plus Market{% endblock %}
+{% block content %}
+<style>
+  .pf{max-width:900px;margin:40px auto;padding:0 20px}
+  .pf-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:24px;align-items:start}
+  @media(max-width:768px){.pf-grid{grid-template-columns:1fr}}
+  .pf-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.05);border:1px solid #f1f5f9}
+  .pf-card h2{font-size:18px;margin-bottom:14px}
+  .fg{margin-bottom:14px}.fg label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+  .fg input,.fg textarea{width:100%;padding:9px 12px;border:1px solid #cbd5e0;border-radius:8px}
+  .mini{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f1f5f9;font-size:14px;text-decoration:none;color:inherit}
+</style>
+<div class="pf">
+  <h1 style="font-size:26px;font-weight:800;margin-bottom:22px">Mening kabinetim</h1>
+  <div class="pf-grid">
+    <div class="pf-card">
+      <h2>Shaxsiy ma'lumotlar</h2>
+      <p style="color:#64748b;font-size:13.5px;margin-bottom:14px">Email: <strong>{{ request.user.email }}</strong></p>
+      <form method="post">
+        {% csrf_token %}
+        <div class="fg"><label>F.I.O.</label>{{ form.full_name }}</div>
+        <div class="fg"><label>Telefon raqam</label>{{ form.phone_number }}</div>
+        <div class="fg"><label>Manzil</label>{{ form.address }}</div>
+        <button type="submit" class="btn btn--primary">Saqlash</button>
+      </form>
+    </div>
+    <div class="pf-card">
+      <h2>So'nggi buyurtmalar</h2>
+      {% for order in orders %}
+        <a class="mini" href="{% url 'order_success' order.token %}"><span>#{{ order.id }} · {{ order.created_at|date:"d.m.Y" }} · {{ order.get_status_display }}</span><strong>{{ order.total_amount }} so'm</strong></a>
+      {% empty %}<p style="color:#94a3b8">Hali buyurtmalar yo'q.</p>{% endfor %}
+      <p style="margin-top:14px"><a href="{% url 'my_orders' %}" style="color:var(--purple,#4c3f91);font-weight:600">Barcha buyurtmalar →</a></p>
+      <p style="margin-top:8px"><a href="{% url 'favorites' %}" style="color:#e8402a;font-weight:600">♥ Sevimli mahsulotlar →</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Buyurtmani rasmiylashtirish — Plus Market{% endblock %}
+
+{% block content %}
+<style>
+  .co-wrap{max-width:1000px;margin:40px auto;padding:0 20px}
+  .co-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+  @media(max-width:768px){.co-grid{grid-template-columns:1fr}}
+  .co-card{background:#fff;border-radius:16px;padding:26px;box-shadow:0 4px 20px rgba(0,0,0,.05);border:1px solid #f1f5f9}
+  .co-card h2{font-size:19px;margin-bottom:18px}
+  .co-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px}
+  .co-item:last-of-type{border-bottom:none}
+  .co-total{display:flex;justify-content:space-between;font-weight:700;font-size:17px;margin-top:16px;padding-top:14px;border-top:1px solid #e2e8f0}
+  .fg{margin-bottom:16px}.fg label{display:block;font-size:14px;font-weight:600;margin-bottom:6px;color:#4a5568}
+  .fg input,.fg select{width:100%;padding:10px 12px;border:1px solid #cbd5e0;border-radius:8px;font-size:14px}
+  .co-submit{width:100%;background:#ea580c;color:#fff;padding:13px;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer}
+  .co-submit:hover{background:#c2410c}
+</style>
+<div class="co-wrap">
+  <h1 style="font-size:26px;font-weight:800;margin-bottom:22px;">Buyurtmani rasmiylashtirish</h1>
+  <div class="co-grid">
+    <div class="co-card">
+      <h2>Savatingiz ({{ cart_items|length }} ta mahsulot)</h2>
+      {% for item in cart_items %}
+        <div class="co-item">
+          <div><strong>{{ item.product.title }}</strong><br><span style="color:#64748b">{{ item.quantity }} {{ item.product.unit }} × {{ item.product.price }} so'm</span></div>
+          <div>{{ item.total }} so'm</div>
+        </div>
+      {% endfor %}
+      <div class="co-total"><span>Mahsulotlar jami</span><span>{{ product_total }} so'm</span></div>
+      <p style="font-size:13px;color:#94a3b8;margin-top:10px;">Yetkazib berish narxi hududingizga qarab qo'shiladi.</p>
+    </div>
+    <div class="co-card">
+      <h2>Yetkazib berish ma'lumotlari</h2>
+      <form action="{% url 'checkout' %}" method="POST">
+        {% csrf_token %}
+        <div class="fg"><label for="full_name">F.I.O.</label>
+          <input type="text" id="full_name" name="full_name" value="{{ request.user.full_name }}" required></div>
+        <div class="fg"><label for="phone_number">Telefon raqam</label>
+          <input type="text" id="phone_number" name="phone_number" value="{{ request.user.phone_number }}" placeholder="+998 90 123 45 67" required></div>
+        <div class="fg"><label for="region">Viloyat / Hudud</label>
+          <select id="region" name="region" required>
+            <option value="" disabled selected>Viloyatni tanlang</option>
+            {% for region in regions %}<option value="{{ region.id }}">{{ region.name }} (yetkazish: {{ region.delivery_cost }} so'm)</option>{% endfor %}
+          </select></div>
+        <div class="fg"><label for="address">Aniq manzil</label>
+          <input type="text" id="address" name="address" value="{{ request.user.address|default:'' }}" placeholder="Tuman, ko'cha, uy..." required></div>
+        <button type="submit" class="co-submit">Buyurtmani tasdiqlash</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

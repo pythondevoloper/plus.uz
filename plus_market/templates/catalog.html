@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Katalog — Plus Market{% endblock %}
+
+{% block content %}
+  <section class="section wrap">
+    <div class="section__head">
+      <h2>{% if category %}{{ category.name }}{% elif query %}"{{ query }}" bo'yicha natijalar{% else %}Barcha mahsulotlar{% endif %}</h2>
+    </div>
+
+    <div class="products">
+      {% for product in products %}
+        <div class="card">
+          <a href="{% url 'product_detail' product.slug %}" class="card__img">
+            {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.title }}">{% else %}<span style="font-size:13px;">Rasm yo'q</span>{% endif %}
+          </a>
+          <span class="card__unit">{{ product.unit }}{% if product.reviews_count %} · ★ {{ product.average_rating }} ({{ product.reviews_count }}){% endif %}</span>
+          <a href="{% url 'product_detail' product.slug %}" class="card__name">{{ product.title }}</a>
+          <div class="card__row">
+            <span class="card__price">{{ product.price }} so'm</span>
+            <form action="{% url 'cart_add' product.id %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.get_full_path }}">
+              <button class="card__add" type="submit" aria-label="Savatga qo'shish">+</button>
+            </form>
+          </div>
+        </div>
+      {% empty %}
+        <p>Hech narsa topilmadi.</p>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

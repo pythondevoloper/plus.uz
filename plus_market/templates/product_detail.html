@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}{{ product.title }} — Plus Market{% endblock %}
+
+{% block content %}
+<style>
+  .pd{max-width:1100px;margin:32px auto;padding:0 20px}
+  .pd-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-bottom:30px}
+  @media(max-width:768px){.pd-grid{grid-template-columns:1fr}}
+  .pd-img{background:var(--cream,#faf8f2);border-radius:18px;min-height:320px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .pd-img img{width:100%;height:100%;object-fit:cover}
+  .pd h1{font-size:26px;font-weight:800;margin-bottom:6px}
+  .pd-price{font-size:30px;font-weight:800;color:var(--forest,#146b45);margin:10px 0 6px}
+  .pd-actions{display:flex;gap:12px;margin:18px 0}
+  .fav-btn{padding:13px 20px;border-radius:999px;border:2px solid #e7e3d6;background:#fff;font-weight:700;cursor:pointer}
+  .fav-btn.active{border-color:#e8402a;color:#e8402a}
+  .rev{background:#fff;border:1px solid #e7e3d6;border-radius:14px;padding:14px 18px;margin-bottom:12px}
+  .stars{color:#d97706;font-weight:700}
+  .rev-form{background:var(--cream,#faf8f2);border-radius:14px;padding:20px;margin-top:18px}
+  .rev-form textarea{width:100%;border:1.5px solid #e7e3d6;border-radius:10px;padding:10px 12px;margin-top:10px}
+  .rev-form .rs{display:flex;gap:12px;flex-wrap:wrap}
+</style>
+<div class="pd">
+  <div class="pd-grid">
+    <div class="pd-img">{% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.title }}">{% else %}<span>Rasm yo'q</span>{% endif %}</div>
+    <div>
+      <h1>{{ product.title }}</h1>
+      <div style="color:#5b6155">{{ product.category.name }} · {{ product.unit }}</div>
+      {% if product.reviews_count %}<div class="stars" style="margin-top:8px">★ {{ product.average_rating }} <span style="color:#5b6155;font-weight:500">({{ product.reviews_count }} ta sharh)</span></div>{% endif %}
+      <div class="pd-price">{{ product.price }} so'm / {{ product.unit }}</div>
+      {% if product.is_available and product.stock > 0 %}
+        <div style="color:#5b6155">Omborda: {{ product.stock }} {{ product.unit }}</div>
+      {% else %}
+        <div style="color:#e8402a;font-weight:700">Hozircha tugagan</div>
+      {% endif %}
+      <div class="pd-actions">
+        <form action="{% url 'cart_add' product.id %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit" class="btn btn--primary" {% if not product.is_available or product.stock <= 0 %}disabled{% endif %}>Savatga qo'shish</button>
+        </form>
+        <form action="{% url 'favorite_toggle' product.id %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit" class="fav-btn {% if is_favorite %}active{% endif %}">{% if is_favorite %}♥ Sevimlida{% else %}♡ Sevimlilarga{% endif %}</button>
+        </form>
+      </div>
+      {% if product.description %}<p style="line-height:1.7;color:#334155">{{ product.description }}</p>{% endif %}
+    </div>
+  </div>
+
+  <h2 style="font-size:20px;font-weight:800;margin:30px 0 14px">Sharhlar {% if product.reviews_count %}({{ product.reviews_count }}){% endif %}</h2>
+  {% for review in reviews %}
+    <div class="rev">
+      <div style="display:flex;justify-content:space-between"><strong>{{ review.user.full_name }}</strong><span style="color:#94a3b8;font-size:13px">{{ review.created_at|date:"d.m.Y" }}</span></div>
+      <div class="stars">{% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}</div>
+      {% if review.text %}<p style="margin-top:6px;color:#334155">{{ review.text }}</p>{% endif %}
+    </div>
+  {% empty %}
+    <p style="color:#5b6155">Hali sharhlar yo'q. Birinchi bo'lib fikr bildiring!</p>
+  {% endfor %}
+
+  {% if request.user.is_authenticated %}
+    <form method="post" class="rev-form">
+      {% csrf_token %}
+      <strong>{% if user_review %}Sharhingizni tahrirlang{% else %}Sharh qoldiring{% endif %}</strong>
+      <div class="rs" style="margin-top:8px">{% for radio in review_form.rating %}<label>{{ radio.tag }} {{ radio.choice_label }}</label>{% endfor %}</div>
+      {{ review_form.rating.errors }}
+      {{ review_form.text }}
+      <button type="submit" name="submit_review" class="btn btn--primary" style="margin-top:12px">{% if user_review %}Yangilash{% else %}Yuborish{% endif %}</button>
+    </form>
+  {% else %}
+    <p style="margin-top:16px"><a href="{% url 'login' %}?next={{ request.path }}" style="color:var(--purple,#4c3f91);font-weight:600">Sharh qoldirish uchun tizimga kiring</a></p>
+  {% endif %}
+
+  {% if related_products %}
+    <h2 style="font-size:20px;font-weight:800;margin:40px 0 16px">O'xshash mahsulotlar</h2>
+    <div class="products">
+      {% for rp in related_products %}
+        <div class="card">
+          <a href="{% url 'product_detail' rp.slug %}" class="card__img">{% if rp.image %}<img src="{{ rp.image.url }}" alt="{{ rp.title }}">{% endif %}</a>
+          <span class="card__unit">{{ rp.unit }}</span>
+          <a href="{% url 'product_detail' rp.slug %}" class="card__name">{{ rp.title }}</a>
+          <div class="card__row"><span class="card__price">{{ rp.price }} so'm</span></div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

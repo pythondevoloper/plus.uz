@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Sevimlilar — Plus Market{% endblock %}
+{% block content %}
+  <section class="section wrap">
+    <div class="section__head"><h2>Sevimli mahsulotlar</h2></div>
+    <div class="products">
+      {% for fav in favorites %}
+        <div class="card">
+          <a href="{% url 'product_detail' fav.product.slug %}" class="card__img">{% if fav.product.image %}<img src="{{ fav.product.image.url }}" alt="{{ fav.product.title }}">{% endif %}</a>
+          <span class="card__unit">{{ fav.product.unit }}</span>
+          <a href="{% url 'product_detail' fav.product.slug %}" class="card__name">{{ fav.product.title }}</a>
+          <div class="card__row">
+            <span class="card__price">{{ fav.product.price }} so'm</span>
+            <form action="{% url 'cart_add' fav.product.id %}" method="post">{% csrf_token %}<input type="hidden" name="next" value="{% url 'favorites' %}"><button class="card__add" type="submit" aria-label="Savatga qo'shish">+</button></form>
+          </div>
+          <form action="{% url 'favorite_toggle' fav.product.id %}" method="post" style="margin-top:8px">
+            {% csrf_token %}<input type="hidden" name="next" value="{% url 'favorites' %}">
+            <button type="submit" style="width:100%;border:1.5px solid #e8402a;background:none;color:#e8402a;border-radius:999px;padding:7px;font-weight:600;cursor:pointer">♥ Olib tashlash</button>
+          </form>
+        </div>
+      {% empty %}
+        <p>Sevimlilar ro'yxati bo'sh. <a href="{% url 'catalog' %}" style="color:var(--forest);font-weight:600">Xarid qilishni boshlang</a>.</p>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

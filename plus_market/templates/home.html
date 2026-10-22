@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Plus Market — kundalik xaridlar bitta joydan{% endblock %}
+
+{% block content %}
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero__text">
+        <p class="hero__eyebrow">Bugungi yetkazib berish 60 daqiqada</p>
+        <h1>Do'konga bormang,<br><em>Plus</em>ga buyurtma bering</h1>
+        <p>Yangi meva-sabzavotdan tortib kundalik ehtiyojlaringizgacha — barchasi bitta joyda.</p>
+        <a href="{% url 'catalog' %}" class="btn btn--primary">Xaridni boshlash</a>
+      </div>
+      <div class="hero__art">
+        <div class="hero__blob hero__blob--1"></div>
+        <div class="hero__blob hero__blob--2"></div>
+        <div class="hero__blob hero__blob--3"></div>
+        <div class="hero__blob hero__blob--4"></div>
+        <img src="{% static 'img/logo.webp' %}" alt="Plus Market">
+      </div>
+    </div>
+  </section>
+
+  <section class="tiles wrap">
+    <div class="tiles__grid">
+      <a href="{% url 'catalog' %}" class="tile tile--green"><h3>Meva &amp; sabzavot</h3><span>Ko'rish</span></a>
+      <a href="{% url 'catalog' %}" class="tile tile--red"><h3>Aksiyadagilar</h3><span>Ko'rish</span></a>
+      <a href="{% url 'catalog' %}" class="tile tile--purple"><h3>Sut mahsulotlari</h3><span>Ko'rish</span></a>
+      <a href="{% url 'catalog' %}" class="tile tile--forest"><h3>Ichimliklar</h3><span>Ko'rish</span></a>
+    </div>
+  </section>
+{% endblock %}

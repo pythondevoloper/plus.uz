@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Kirish — Plus Market{% endblock %}
+{% block content %}
+<style>
+  .auth{max-width:420px;margin:50px auto;padding:0 20px}
+  .auth-card{background:#fff;border-radius:18px;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,.06);border:1px solid #f1f5f9}
+  .auth h1{font-size:24px;font-weight:800;margin-bottom:20px}
+  .fg{margin-bottom:16px}.fg label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px}
+  .fg input{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14.5px}
+  .errorlist{color:#dc2626;font-size:12.5px;list-style:none;padding:0;margin:4px 0 0}
+  .auth-btn{width:100%;background:var(--green,#8bc53f);border:none;padding:12px;border-radius:999px;font-weight:700;font-size:15px;cursor:pointer}
+  .auth-sw{text-align:center;margin-top:18px;font-size:13.5px;color:#64748b}.auth-sw a{color:var(--purple,#4c3f91);font-weight:600}
+</style>
+<div class="auth"><div class="auth-card">
+  <h1>Tizimga kirish</h1>
+  {{ form.non_field_errors }}
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
+    <div class="fg"><label>Email</label>{{ form.username }}{{ form.username.errors }}</div>
+    <div class="fg"><label>Parol</label>{{ form.password }}{{ form.password.errors }}</div>
+    <button type="submit" class="auth-btn">Kirish</button>
+  </form>
+  <p class="auth-sw">Hisobingiz yo'qmi? <a href="{% url 'register' %}">Ro'yxatdan o'ting</a></p>
+</div></div>
+{% endblock %}
